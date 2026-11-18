@@ -1,6 +1,4 @@
-\# Weekly AI Tool Adoption Reporting
-
-
+# Weekly AI Tool Adoption Reporting
 
 This notebook reports weekly active users (WAU), weekly power users (WPU), and
 
@@ -8,34 +6,23 @@ the power-user rate for eligible Advisory employees. It covers Quill, Atlas,
 
 and the distinct users across available tools (`ANY`).
 
-
-
-\## Regenerate the report
-
-
+## Regenerate the report
 
 Requires Python 3.10 or later. Place the supplied `data/` folder alongside
 
-`CS\_JP.ipynb`, keeping the original folder structure. From the project root,
+`CS_JP.ipynb`, keeping the original folder structure. From the project root,
 
 run:
 
-
-
 ```powershell
 
-python -m pip install pandas openpyxl nbformat nbclient ipykernel
-
-python -c "import nbformat; from nbclient import NotebookClient; notebook = nbformat.read('CS\_JP.ipynb', as\_version=4); NotebookClient(notebook, kernel\_name='python3', timeout=600).execute()"
-
+python -m pip install pandas openpyxl
+python run_report.py
 ```
 
+The runner executes the notebook's code from top to bottom. The code validates the report and writes `out/weekly_tool_metrics.csv`.
 
-
-The notebook validates the report and writes `out/weekly\_tool\_metrics.csv`.
-
-You can also open `CS\_JP.ipynb` in Jupyter and run all cells from top to bottom.
-
+You can also open `CS_JP.ipynb` in Jupyter and run all cells from top to bottom.
 
 ## Leadership takeaways
 
@@ -53,7 +40,7 @@ You can also open `CS\_JP.ipynb` in Jupyter and run all cells from top to bottom
 
 - HR roster: 45 employees had multiple records. I selected the latest record
   per employee before filtering to Advisory, leaving 1,507 eligible employees.
-- Quill: The source contained 1,397 rows beyond the first occurrence of each
+- Quill: ID normalisation changed the formatting of 8,455 source rows. The source contained 1,397 rows beyond the first occurrence of each
   exact match. Without an event ID, I treated identical generation records as
   duplicates for reporting. This changed 64 employee-week power-user
   classifications. Weekly active-user counts were unchanged.
@@ -75,7 +62,8 @@ You can also open `CS\_JP.ipynb` in Jupyter and run all cells from top to bottom
   missing feeds or unexpected changes in row counts.
 - Keep a record of source filenames and delivery dates so revised weeks can
   be rebuilt and traced.
-- Add automated checks for delivery replacement, missing weeks, and employees
-  who use both tools.
+- Validate the schema, unique week/tool rows and metric bounds before publishing.
+  If validation fails, retain the last verified dashboard and flag it as stale.
+  Show a coverage warning for weeks with a missing feed.
 - Pin dependency versions and test that the report regenerates in a clean
   environment.
